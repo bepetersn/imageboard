@@ -1,0 +1,14 @@
+
+{% from "_post.html" import show_post %}
+{% extends "_base.html" %}
+
+{% block content %}
+<div>
+    <h1>Thread #{{ t.id }}:</h1>
+    <p>Subject: {{ t.subject }}</p>
+
+    {% for p in t.posts %}
+        {{ show_post(p) }}
+    {% endfor %}
+</div>
+{% endblock %}

@@ -8,6 +8,7 @@ from models import Thread
 app = Flask(__name__)
 app.debug = True
 app.secret_key = 'fake'
+app.jinja_env.filters['strftime'] = lambda t: t.strftime('%b %m %Y at %H:%I%p')
 
 
 @app.route('/', methods=['GET'])
@@ -17,9 +18,9 @@ def index():
 
 @app.route('/new-thread/', methods=['POST'])
 def new_thread():
-    f = NewThreadForm()
-    if f.validate_on_submit():
-        t = Thread.from_details(**f.data)
+    form = NewThreadForm()
+    if form.validate_on_submit():
+        t = Thread.from_details(**form.data)
         return redirect(url_for('thread', id=t.id))
     else:
         # deal with bad forms later
@@ -32,17 +33,7 @@ def thread(id):
     if t is None:
         return 'No such thread.', 500
     else:
-        return ('Thread #{}: '
-                'Created on {} '
-                'Subject: {} '
-                'Poster: {} '
-                'Comment: {}'.format(
-                    t.id,
-                    t.details.time_created.strftime('%b %m %Y at %H:%I%p'),
-                    t.subject,
-                    t.details.name,
-                    t.details.comment
-                ), 200)
+        return render_template('thread.html', t=t)
 
 
 if __name__ == '__main__':

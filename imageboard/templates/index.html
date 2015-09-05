@@ -1,19 +1,13 @@
 
+{% extends "_base.html" %}
 
-<html>
-<head>
-     <link rel="stylesheet" type="text/css" href="/static/style.css" />
-</head>
-<body>
-    <div id="content">
-        <h1>Imageboard</h1>
-        <form id="new-thread-form" action="{{ url_for('new_thread') }}" method="POST">
-           {{ form.csrf_token }}
-            <input name="name" placeholder="Anonymous">
-            <input name="subject" placeholder="Subject">
-            <input name="comment" placeholder="Comment">
-            <input type="submit" value="Post">
-        </form>
-    </div>
-</body>
-</html>
+{% block content %}
+<h1>Imageboard</h1>
+<form id="new-thread-form" action="{{ url_for('new_thread') }}" method="POST">
+   {{ form.csrf_token }}
+    <input name="name" placeholder="Anonymous">
+    <input name="subject" placeholder="Subject">
+    <input name="comment" placeholder="Comment">
+    <input type="submit" value="Post">
+</form>
+{% endblock %}

@@ -1,0 +1,8 @@
+
+{% macro show_post(post) %}
+<div>
+    <p>Poster: {{ post.name }}</p>
+    <i>Submitted: {{ post.time_created|strftime }}</i>
+    <p>Comment: {{ post.comment }}</p>
+</div>
+{% endmacro %}
