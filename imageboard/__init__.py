@@ -1,9 +1,8 @@
 
 from flask import Flask, render_template, url_for, redirect
 
-from forms import NewThreadForm
-from models import Thread
-
+from forms import NewThreadForm, NewPostForm
+from models import Thread, Post
 
 app = Flask(__name__)
 app.debug = True
@@ -20,8 +19,8 @@ def index():
 def new_thread():
     form = NewThreadForm()
     if form.validate_on_submit():
-        t = Thread.from_details(**form.data)
-        return redirect(url_for('thread', id=t.id))
+        thread = Thread.from_details(**form.data)
+        return redirect(url_for('thread', id=thread.id))
     else:
         # deal with bad forms later
         pass
@@ -29,11 +28,27 @@ def new_thread():
 
 @app.route('/thread/<int:id>/')
 def thread(id):
-    t = Thread.query.get(id)
-    if t is None:
+    thread = Thread.query.get(id)
+    if thread is None:
         return 'No such thread.', 500
     else:
-        return render_template('thread.html', t=t)
+        return render_template('thread.html', thread=thread, form=NewPostForm())
+
+
+@app.route('/thread/<int:thread_id>/new-post/', methods=['POST'])
+def new_post(thread_id):
+    thread = Thread.query.get(thread_id)
+    if thread is None:
+        return 'No such thread.', 500
+    else:
+        form = NewPostForm()
+        if form.validate_on_submit():
+            post = Post(thread=thread, **form.data)
+            post.save()
+            return redirect(url_for('thread', id=thread.id))
+        else:
+            # deal with bad forms later
+            pass
 
 
 if __name__ == '__main__':

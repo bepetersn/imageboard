@@ -4,11 +4,19 @@
 
 {% block content %}
 <div>
-    <h1>Thread #{{ t.id }}:</h1>
-    <p>Subject: {{ t.subject }}</p>
+    <h1>Thread #{{ thread.id }}:</h1>
+    <p>Subject: {{ thread.subject }}</p>
 
-    {% for p in t.posts %}
+    {% for p in thread.posts %}
         {{ show_post(p) }}
     {% endfor %}
+
+    <form id="new-post-form" action="{{ url_for('new_post', thread_id=thread.id) }}" method="POST">
+    {{ form.csrf_token }}
+    {{ form.name.label }} {{ form.name() }}
+    {{ form.comment.label }} {{ form.comment() }}
+    <input type="submit" value="Post">
+</form>
+
 </div>
 {% endblock %}
