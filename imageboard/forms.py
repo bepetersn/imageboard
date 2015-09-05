@@ -1,11 +1,11 @@
 
 from flask_wtf import Form
-from wtforms.fields import StringField, FileField
+from wtforms.fields import StringField
 from wtforms.validators import DataRequired
 
 
 class NewPostForm(Form):
-    name = StringField(default='Anonymous', validators=[DataRequired()])
+    name = StringField(validators=[DataRequired()])
     comment = StringField()
 
 
