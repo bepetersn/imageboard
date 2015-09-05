@@ -1,3 +1,4 @@
+from sqlalchemy.orm import relationship, backref
 from werkzeug.utils import cached_property
 from database import Base, db_session
 
@@ -16,37 +17,40 @@ class Thread(BaseMixin, Base):
 
     __tablename__ = 'threads'
 
-    def __init__(self, subject=None, post_id=None):
+    def __init__(self, subject=None):
         self.subject = subject
-        self.post_id = post_id
 
     @classmethod
     def from_details(cls, subject, name, comment=None):
-        p = Post(name, comment)
+        thread = cls(subject)
+        thread.save()
+        p = Post(name, comment, thread)
         p.save()
-        t = cls(subject=subject, post_id=p.id)
-        t.save()
-        return t
+        return thread
 
     @cached_property
-    def time_created(self):
-        return Post.query.get(self.post_id).time_created
+    def details(self):
+        return self.posts.first()
 
     id = Column(Integer, primary_key=True)
     subject = Column(Unicode)
-    post_id = Column(ForeignKey('posts.id'))
 
 
 class Post(BaseMixin, Base):
 
     __tablename__ = 'posts'
 
-    def __init__(self, name=None, comment=None):
+    def __init__(self, name=None, comment=None, thread=None):
         self.name = name
         self.comment = comment
+        self.thread = thread
         self.time_created = datetime.utcnow()
 
     id = Column(Integer, primary_key=True)
     name = Column(Unicode)
     comment = Column(UnicodeText)
     time_created = Column(DateTime)
+    thread_id = Column(ForeignKey('threads.id'))
+    thread = relationship('Thread',
+                            backref=backref('posts', lazy='dynamic'),
+                            uselist=False)

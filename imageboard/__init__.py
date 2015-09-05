@@ -32,11 +32,16 @@ def thread(id):
     if t is None:
         return 'No such thread.', 500
     else:
-        return ('Thread #{}: {}\n'
-               'Created at {}'.format(
+        return ('Thread #{}: '
+                'Created on {} '
+                'Subject: {} '
+                'Poster: {} '
+                'Comment: {}'.format(
                     t.id,
+                    t.details.time_created.strftime('%b %m %Y at %H:%I%p'),
                     t.subject,
-                    t.time_created.strftime('%b %m %Y at %H:%I%p')
+                    t.details.name,
+                    t.details.comment
                 ), 200)
 
 
