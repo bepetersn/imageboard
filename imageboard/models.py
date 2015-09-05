@@ -27,7 +27,7 @@ class Thread(BaseMixin, Base):
         return thread
 
     id = Column(Integer, primary_key=True)
-    subject = Column(Unicode)
+    subject = Column(Unicode(100))
 
 
 class Post(BaseMixin, Base):
@@ -41,8 +41,8 @@ class Post(BaseMixin, Base):
         self.time_created = datetime.utcnow()
 
     id = Column(Integer, primary_key=True)
-    name = Column(Unicode)
-    comment = Column(UnicodeText)
+    name = Column(Unicode(100))
+    comment = Column(UnicodeText(1500))
     time_created = Column(DateTime)
     thread_id = Column(ForeignKey('threads.id'))
     thread = relationship('Thread',
