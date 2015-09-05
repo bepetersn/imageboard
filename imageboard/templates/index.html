@@ -3,11 +3,12 @@
 
 {% block content %}
 <h1>Imageboard</h1>
-<form id="new-thread-form" action="{{ url_for('new_thread') }}" method="POST">
+<form id="new-thread-form" action="{{ url_for('new_thread') }}" enctype=multipart/form-data method="POST">
     {{ form.csrf_token }}
     {{ form.name.label }} {{ form.name() }}
     {{ form.subject.label }} {{ form.subject() }}
     {{ form.comment.label }} {{ form.comment() }}
+    {{ form.image.label }} {{ form.image() }}
     <input type="submit" value="Post">
 </form>
 {% endblock %}

@@ -11,10 +11,11 @@
         {{ show_post(p) }}
     {% endfor %}
 
-    <form id="new-post-form" action="{{ url_for('new_post', thread_id=thread.id) }}" method="POST">
+    <form id="new-post-form" action="{{ url_for('new_post', thread_id=thread.id) }}" enctype=multipart/form-data method="POST">
     {{ form.csrf_token }}
     {{ form.name.label }} {{ form.name() }}
     {{ form.comment.label }} {{ form.comment() }}
+    {{ form.image.label }} {{ form.image() }}
     <input type="submit" value="Post">
 </form>
 

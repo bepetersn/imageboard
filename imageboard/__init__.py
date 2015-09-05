@@ -1,17 +1,31 @@
 
-from flask import Flask, render_template, url_for, redirect
+from flask import Flask, render_template, url_for, redirect, send_from_directory
+import os
 from forms import NewThreadForm, NewPostForm
 from models import Thread, Post
 
 app = Flask(__name__)
-app.debug = True
-app.secret_key = 'fake'
+app.config.from_pyfile('settings.py')
 app.jinja_env.filters['strftime'] = lambda t: t.strftime('%b %m %Y at %H:%I%p')
 
+def ensure_dir(path):
+    try:
+        os.makedirs(path)
+    except OSError:
+        if not os.path.isdir(path):
+            raise
+
+ensure_dir('uploads')
 
 @app.route('/', methods=['GET'])
 def index():
     return render_template('index.html', form=NewThreadForm())
+
+
+@app.route('/uploads/<filename>')
+def uploaded_file(filename):
+    return send_from_directory(app.config['UPLOADS_DIR'],
+                               filename)
 
 
 @app.route('/new-thread/', methods=['POST'])
@@ -23,7 +37,6 @@ def new_thread():
     else:
         # deal with bad forms later
         pass
-
 
 @app.route('/thread/<int:id>/', methods=['GET'])
 def thread(id):
