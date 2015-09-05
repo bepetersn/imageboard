@@ -1,7 +1,8 @@
 
 from flask import Flask, render_template, url_for, redirect
+
 from forms import NewThreadForm
-#from models import Thread
+from models import Thread
 
 
 app = Flask(__name__)
@@ -18,10 +19,10 @@ def index():
 def new_thread():
     f = NewThreadForm()
     if f.validate_on_submit():
-        # deal with creating real threads
-        return redirect(url_for('thread', id=0))
+        t = Thread()
+        return redirect(url_for('thread', id=t.id))
     else:
-        # deal with later
+        # deal with bad forms later
         pass
 
 
