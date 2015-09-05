@@ -1,6 +1,6 @@
 """
 SQLAlchemy "declarative" style boilerplate
-This setup would let you easily swap out Flask for
+This setup would let you more easily swap out Flask for
 another web framework, such as Django, if you wanted,
 or to access the ORM outside of a web server / WSGI
 application context altogether.

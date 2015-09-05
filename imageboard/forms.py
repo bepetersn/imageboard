@@ -1,12 +1,12 @@
 
 from flask_wtf import Form
-from wtforms.fields import StringField
+from wtforms.fields import StringField, TextAreaField
 from wtforms.validators import DataRequired
 
 
 class NewPostForm(Form):
     name = StringField(validators=[DataRequired()])
-    comment = StringField()
+    comment = TextAreaField()
 
 
 class NewThreadForm(NewPostForm):

@@ -1,9 +1,7 @@
-from sqlalchemy.orm import relationship, backref
-from werkzeug.utils import cached_property
 from database import Base, db_session
-
-from sqlalchemy import Unicode, Integer, Column, DateTime, ForeignKey, UnicodeText
 from datetime import datetime
+from sqlalchemy import Unicode, Integer, Column, DateTime, ForeignKey, UnicodeText
+from sqlalchemy.orm import relationship, backref
 
 
 class BaseMixin:
@@ -27,10 +25,6 @@ class Thread(BaseMixin, Base):
         p = Post(name, comment, thread)
         p.save()
         return thread
-
-    @cached_property
-    def details(self):
-        return self.posts.first()
 
     id = Column(Integer, primary_key=True)
     subject = Column(Unicode)

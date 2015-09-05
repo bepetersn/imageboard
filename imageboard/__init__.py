@@ -1,6 +1,5 @@
 
 from flask import Flask, render_template, url_for, redirect
-
 from forms import NewThreadForm, NewPostForm
 from models import Thread, Post
 
@@ -26,11 +25,11 @@ def new_thread():
         pass
 
 
-@app.route('/thread/<int:id>/')
+@app.route('/thread/<int:id>/', methods=['GET'])
 def thread(id):
     thread = Thread.query.get(id)
     if thread is None:
-        return 'No such thread.', 500
+        return 'No such thread.', 404
     else:
         return render_template('thread.html', thread=thread, form=NewPostForm())
 
