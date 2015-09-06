@@ -3,11 +3,14 @@
 {% macro show_post(post) %}
 <div>
     <p>Poster: {{ post.name }}</p>
+    {% if post.comment %}
+    <p>Comment: {{ post.comment }}</p>
+    {% endif %}
     <i>Submitted: {{ post.time_created|strftime }}</i>
     {% if post.image_path %}
-        <img src="{{ url_for('uploaded_file', filename=post.image_path) }}" alt="{{ post.image_path }}" height="200" width="300">
+    <img src="{{ url_for('uploaded_file', filename=post.image_path) }}" alt="{{ post.image_path }}" height="200" width="300">
     {% endif %}
-    <p>Comment: {{ post.comment }}</p>
+
 </div>
 {% endmacro %}
 
