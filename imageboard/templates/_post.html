@@ -1,9 +1,13 @@
 
+
 {% macro show_post(post) %}
 <div>
     <p>Poster: {{ post.name }}</p>
     <i>Submitted: {{ post.time_created|strftime }}</i>
     <img src="{{ url_for('uploaded_file', filename=post.image_path) }}" alt="{{ post.image_path }}" height="200" width="300">
     <p>Comment: {{ post.comment }}</p>
+    <hr>
 </div>
 {% endmacro %}
+
+

@@ -1,8 +1,22 @@
 
-{% from "_post_form.html" import post_form %}
+{% from "_post_form.html" import show_post_form %}
+{% from "_post.html" import show_post %}
+
 {% extends "_base.html" %}
 
 {% block content %}
+
 <h1>Imageboard</h1>
+
 {{ show_post_form(form=form, action=url_for('new_thread'), is_thread=True) }}
+
+<br/>
+
+{% for t in threads %}
+    Subject: {{ t.subject }}
+    {{ show_post(t.posts.first()) }}
+    <a href="{{ url_for('thread', id=t.id) }}">Click here to view.</a>
+    <br/><hr><br/>
+{% endfor %}
+
 {% endblock %}

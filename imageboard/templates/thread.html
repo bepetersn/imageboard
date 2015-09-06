@@ -1,13 +1,13 @@
 
-{% from "_post_form.html" import post_form %}
-{% from "_post.html" import show_post %}
 {% extends "_base.html" %}
+
+{% from "_post_form.html" import show_post_form %}
+{% from "_post.html" import show_post %}
 
 {% block content %}
 <div>
     <h1>Thread #{{ thread.id }}:</h1>
     <p>Subject: {{ thread.subject }}</p>
-
     {% for p in thread.posts %}
         {{ show_post(p) }}
     {% endfor %}

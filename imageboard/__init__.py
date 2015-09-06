@@ -1,12 +1,14 @@
 
-from flask import Flask, render_template, url_for, redirect, send_from_directory
 import os
+from flask import Flask, render_template, url_for, redirect, send_from_directory
 from forms import NewThreadForm, NewPostForm
 from models import Thread, Post
+
 
 app = Flask(__name__)
 app.config.from_pyfile('settings.py')
 app.jinja_env.filters['strftime'] = lambda t: t.strftime('%b %m %Y at %H:%I%p')
+
 
 def ensure_dir(path):
     try:
@@ -15,11 +17,15 @@ def ensure_dir(path):
         if not os.path.isdir(path):
             raise
 
+
 ensure_dir('uploads')
+
 
 @app.route('/', methods=['GET'])
 def index():
-    return render_template('index.html', form=NewThreadForm())
+    return render_template('index.html',
+                           form=NewThreadForm(),
+                           threads=Thread.query.all())
 
 
 @app.route('/uploads/<filename>')
@@ -44,7 +50,9 @@ def thread(id):
     if thread is None:
         return 'No such thread.', 404
     else:
-        return render_template('thread.html', thread=thread, form=NewPostForm())
+        return render_template('thread.html',
+                               thread=thread,
+                               form=NewPostForm())
 
 
 @app.route('/thread/<int:thread_id>/new-post/', methods=['POST'])
