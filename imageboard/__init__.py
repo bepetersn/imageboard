@@ -1,23 +1,13 @@
 
-import os
 from flask import Flask, render_template, url_for, redirect, send_from_directory
 from forms import NewThreadForm, NewPostForm
+from imageboard.utils import ensure_dir
 from models import Thread, Post
 
 
 app = Flask(__name__)
 app.config.from_pyfile('settings.py')
 app.jinja_env.filters['strftime'] = lambda t: t.strftime('%b %m %Y at %H:%I%p')
-
-
-def ensure_dir(path):
-    try:
-        os.makedirs(path)
-    except OSError:
-        if not os.path.isdir(path):
-            raise
-
-
 ensure_dir('uploads')
 
 
@@ -69,7 +59,3 @@ def new_post(thread_id):
         else:
             # deal with bad forms later
             pass
-
-
-if __name__ == '__main__':
-    app.run()
