@@ -41,8 +41,9 @@ class Post(BaseMixin, Base):
 
     def __init__(self, name=None, image=None, comment=None, thread=None):
 
-        self.image_path = image.filename
-        image.save(os.path.join(UPLOADS_DIR, image.filename))
+        if image:
+            self.image_path = image.filename
+            image.save(os.path.join(UPLOADS_DIR, image.filename))
 
         self.name = name
         self.comment = comment
