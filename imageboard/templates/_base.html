@@ -1,17 +1,22 @@
 <!DOCTYPE html>
 <html>
-{% block head %}
 <head lang="en">
     <meta charset="UTF-8">
-    {% block title %}
-    <title>Imageboard</title>
-    {% endblock title %}
+    <title>{% block title %}Imageboard{% endblock title %}</title>
     {% block css %}
     <link rel="stylesheet" type="text/css" href="/static/style.css" />
     {% endblock css %}
 </head>
-{% endblock head %}
 <body>
+    <div class="{% block flash_class %}flashes{% endblock %}">
+      <br>
+      {% block flashes %}
+        {% for (category, message) in get_flashed_messages(with_categories=True) %}
+          <div class="alert alert-{{ category }}" role="alert">{{ message }}</div>
+        {% endfor %}
+
+      {% endblock flashes %}
+    </div>
     <div id="content">
         {% block content %}
         {% endblock content %}

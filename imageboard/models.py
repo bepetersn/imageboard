@@ -1,20 +1,22 @@
 import os
 from datetime import datetime
+from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy import Unicode, Integer, Column, DateTime, ForeignKey, UnicodeText
 from sqlalchemy.orm import relationship, backref
 from werkzeug.utils import secure_filename
-from settings import UPLOADS_DIR
-from database import Base, db_session
+from config import UPLOADS_DIR
+
+db = SQLAlchemy()
 
 
 class BaseMixin:
 
     def save(self):
-        db_session.add(self)
-        db_session.commit()
+        db.session.add(self)
+        db.session.commit()
 
 
-class Thread(BaseMixin, Base):
+class Thread(BaseMixin, db.Model):
 
     __tablename__ = 'threads'
 
@@ -36,7 +38,7 @@ class Thread(BaseMixin, Base):
     subject = Column(Unicode(100))
 
 
-class Post(BaseMixin, Base):
+class Post(BaseMixin, db.Model):
 
     __tablename__ = 'posts'
 

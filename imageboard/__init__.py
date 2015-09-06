@@ -1,13 +1,14 @@
 
 from flask import Flask, render_template, url_for, redirect, send_from_directory
 from forms import NewThreadForm, NewPostForm
-from imageboard.utils import ensure_dir
-from models import Thread, Post
+from utils import ensure_dir, flash_form_errors
+from models import Thread, Post, db
 
 
 app = Flask(__name__)
-app.config.from_pyfile('settings.py')
+app.config.from_pyfile('config.py')
 app.jinja_env.filters['strftime'] = lambda t: t.strftime('%b %m %Y at %H:%I%p')
+db.init_app(app)
 ensure_dir('uploads')
 
 
@@ -31,31 +32,25 @@ def new_thread():
         thread = Thread.from_details(**form.data)
         return redirect(url_for('thread', id=thread.id))
     else:
-        # deal with bad forms later
-        pass
+        flash_form_errors(form)
+        return redirect(url_for('index'))
+
 
 @app.route('/thread/<int:id>/', methods=['GET'])
 def thread(id):
-    thread = Thread.query.get(id)
-    if thread is None:
-        return 'No such thread.', 404
-    else:
-        return render_template('thread.html',
-                               thread=thread,
-                               form=NewPostForm())
+    return render_template('thread.html',
+                           thread=Thread.query.get_or_404(id),
+                           form=NewPostForm())
 
 
 @app.route('/thread/<int:thread_id>/new-post/', methods=['POST'])
-def new_post(thread_id):
-    thread = Thread.query.get(thread_id)
-    if thread is None:
-        return 'No such thread.', 500
+def new_post(id):
+    form = NewPostForm()
+    if form.validate_on_submit():
+        post = Post(thread=Thread.query.get_or_404(id),
+                    **form.data)
+        post.save()
     else:
-        form = NewPostForm()
-        if form.validate_on_submit():
-            post = Post(thread=thread, **form.data)
-            post.save()
-            return redirect(url_for('thread', id=thread.id))
-        else:
-            # deal with bad forms later
-            pass
+        flash_form_errors(form)
+
+    return redirect(url_for('thread', id=id))
