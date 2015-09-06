@@ -1,14 +1,8 @@
 
+{% from "_post_form.html" import post_form %}
 {% extends "_base.html" %}
 
 {% block content %}
 <h1>Imageboard</h1>
-<form id="new-thread-form" action="{{ url_for('new_thread') }}" enctype=multipart/form-data method="POST">
-    {{ form.csrf_token }}
-    {{ form.name.label }} {{ form.name() }}
-    {{ form.subject.label }} {{ form.subject() }}
-    {{ form.comment.label }} {{ form.comment() }}
-    {{ form.image.label }} {{ form.image() }}
-    <input type="submit" value="Post">
-</form>
+{{ show_post_form(form=form, action=url_for('new_thread'), is_thread=True) }}
 {% endblock %}
