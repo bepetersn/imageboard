@@ -1,0 +1,13 @@
+
+{% macro show_post_form(form, action, is_thread) %}
+<form action="{{ action }}" enctype=multipart/form-data method="POST">
+    {{ form.csrf_token }}
+    {{ form.name.label }} {{ form.name() }}
+    {% if is_thread %}
+    {{ form.subject.label }} {{ form.subject() }}
+    {% endif %}
+    {{ form.comment.label }} {{ form.comment() }}
+    {{ form.image.label }} {{ form.image() }}
+    <input type="submit" value="Post">
+</form>
+{% endmacro %}
