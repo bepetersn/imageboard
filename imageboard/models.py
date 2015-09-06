@@ -2,6 +2,7 @@ import os
 from datetime import datetime
 from sqlalchemy import Unicode, Integer, Column, DateTime, ForeignKey, UnicodeText
 from sqlalchemy.orm import relationship, backref
+from werkzeug.utils import secure_filename
 from settings import UPLOADS_DIR
 from database import Base, db_session
 
@@ -42,8 +43,8 @@ class Post(BaseMixin, Base):
     def __init__(self, name=None, image=None, comment=None, thread=None):
 
         if image:
-            self.image_path = image.filename
-            image.save(os.path.join(UPLOADS_DIR, image.filename))
+            self.image_path = secure_filename(image.filename)
+            image.save(os.path.join(UPLOADS_DIR, self.image_path))
 
         self.name = name
         self.comment = comment
