@@ -25,7 +25,7 @@ ensure_dir('uploads')
 def index():
     return render_template('index.html',
                            form=NewThreadForm(),
-                           threads=Thread.query.all())
+                           threads=Thread.query.join(Post).order_by(Post.time_created.desc()).all())
 
 
 @app.route('/uploads/<filename>')
