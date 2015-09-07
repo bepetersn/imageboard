@@ -48,9 +48,9 @@ class Thread(BaseMixin, db.Model):
 
 class Post(BaseMixin, db.Model):
     """
-    Thread object, which holds a little metadata, but
-    mostly represents a page where a list of posts can
-    be found.
+    Post object, which represents a single post
+    that a poster makes on the forum, encapsulating
+    an image, comment, time created, etc.
 
     """
 
