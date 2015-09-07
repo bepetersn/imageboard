@@ -1,5 +1,6 @@
 
-from flask import Flask, render_template, url_for, redirect, send_from_directory, request
+from flask import Flask, render_template, url_for, redirect, \
+    send_from_directory, request
 from forms import NewThreadForm, NewPostForm
 from utils import ensure_dir, flash_form_errors
 from models import Thread, Post, IPAddress, Poster, db
@@ -15,7 +16,8 @@ ensure_dir('uploads')
 def index():
     return render_template('index.html',
                            form=NewThreadForm(),
-                           threads=Thread.query.join(Post).order_by(Post.time_created.desc()).all())
+                           threads=Thread.query.join(Post)\
+                                    .order_by(Post.time_created.desc()).all())
 
 
 @app.route('/uploads/<filename>')

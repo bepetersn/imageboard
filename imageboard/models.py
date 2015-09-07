@@ -20,7 +20,7 @@ class BaseMixin:
         inst = cls.query.filter_by(**kwargs).first()
         if inst is None:
             inst = cls(**kwargs)
-        inst.save()
+            inst.save()
         return inst
 
 
@@ -95,10 +95,15 @@ class Poster(BaseMixin, db.Model):
         return thread
 
     def create_post(self, thread, image=None, comment=None):
-        return Post(image=image,
-                    comment=comment,
-                    thread=thread,
-                    poster=self)
+        p = Post(image=image,
+             comment=comment,
+             thread=thread,
+             poster=self)
+        p.save()
+        return p
+
+    def __repr__(self):
+        return self.name
 
     id = Column(Integer, primary_key=True)
     name = Column(Unicode(100))
