@@ -1,5 +1,9 @@
 
-{% macro show_post_form(form, action, is_thread) %}
+{# Given the form object itself and an 'action' endpoint,
+   builds the form used for creating posts, or starting
+   a new thread--the latter has a "subject" input as well. #}
+
+{% macro show_post_form(form, action, new_thread=False) %}
 <form action="{{ action }}" enctype=multipart/form-data method="POST">
     {{ form.csrf_token }}
     {{ form.name.label }} {{ form.name() }}

@@ -1,7 +1,7 @@
 import os
 from datetime import datetime
 from flask_sqlalchemy import SQLAlchemy
-from sqlalchemy import Unicode, Integer, Column, DateTime, ForeignKey, UnicodeText
+from sqlalchemy import Unicode, Integer, Column, DateTime, ForeignKey, UnicodeText, Boolean
 from sqlalchemy.orm import relationship, backref
 from werkzeug.utils import secure_filename
 from config import UPLOADS_DIR
@@ -10,6 +10,11 @@ db = SQLAlchemy()
 
 
 class BaseMixin:
+    """
+    Simple mixin providing some convenience
+    methods to all models.
+
+    """
 
     def save(self):
         db.session.add(self)
@@ -25,6 +30,12 @@ class BaseMixin:
 
 
 class Thread(BaseMixin, db.Model):
+    """
+    Thread object, which holds some metadata and
+    represents a page where a list of posts can be
+    found.
+
+    """
 
     __tablename__ = 'threads'
 
@@ -36,6 +47,12 @@ class Thread(BaseMixin, db.Model):
 
 
 class Post(BaseMixin, db.Model):
+    """
+    Thread object, which holds a little metadata, but
+    mostly represents a page where a list of posts can
+    be found.
+
+    """
 
     __tablename__ = 'posts'
 
@@ -65,18 +82,45 @@ class Post(BaseMixin, db.Model):
 
 
 class IPAddress(BaseMixin, db.Model):
+    """
+    String serialization of a unique, 32-byte
+    IPv4 address in dot-decimal notation, e.g.
+    "192.254.0.1".
+
+    Also has a field "blocked" which if set in
+    the database, will not let users with this
+    IP address create any posts.
+
+    """
 
     __tablename__ = 'ip_addresses'
 
-    def __init__(self, v4):
-
+    def __init__(self, v4, blocked=None):
         self.v4 = v4
+        self.blocked = False if blocked is None else blocked
 
     id = Column(Integer, primary_key=True)
-    v4 = Column(Unicode(15))
+    v4 = Column(Unicode(15), unique=True)
+    blocked = Column(Boolean)
 
 
 class Poster(BaseMixin, db.Model):
+    """
+    Poster model, maintaining a unique
+    association between an IP address and
+    a name.
+
+    In the future, this could be used to
+    keep track of what IP addresses make
+    use of which names, to store more
+    data about posters' devices, or to
+    do finer-grained blocking.
+
+    This class also has some APIs for
+    creating posts and threads with a
+    level of abstraction.
+
+    """
 
     __tablename__ = 'posters'
 
@@ -106,7 +150,7 @@ class Poster(BaseMixin, db.Model):
         return self.name
 
     id = Column(Integer, primary_key=True)
-    name = Column(Unicode(100))
+    name = Column(Unicode(100), unique=True)
     ip_address_id = Column(ForeignKey('ip_addresses.id'))
     ip_address = relationship('IPAddress',
                               backref=backref('posters', lazy='dynamic'),

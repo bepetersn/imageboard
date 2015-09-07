@@ -1,6 +1,6 @@
 
 """
-Settings file
+Settings file.
 
 """
 

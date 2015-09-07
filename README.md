@@ -1,3 +1,3 @@
 Imageboard
 
-A site forum for browsing images.
+A flat site forum for posting & browsing images.
