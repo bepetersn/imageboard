@@ -15,7 +15,7 @@
 {% for t in threads %}
     Subject: {{ t.subject }}
     {{ show_post(t.posts.first()) }}
-    <a href="{{ url_for('thread', id=t.id) }}">Click here to view.</a>
+    <a href="{{ url_for('thread', thread_id=t.id) }}">Click here to view.</a>
     <br/><hr><br/>
 {% endfor %}
 

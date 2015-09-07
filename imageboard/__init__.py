@@ -1,9 +1,8 @@
 
-from flask import Flask, render_template, url_for, redirect, send_from_directory
+from flask import Flask, render_template, url_for, redirect, send_from_directory, request
 from forms import NewThreadForm, NewPostForm
 from utils import ensure_dir, flash_form_errors
-from models import Thread, Post, db
-
+from models import Thread, Post, IPAddress, Poster, db
 
 app = Flask(__name__)
 app.config.from_pyfile('config.py')
@@ -29,28 +28,37 @@ def uploaded_file(filename):
 def new_thread():
     form = NewThreadForm()
     if form.validate_on_submit():
-        thread = Thread.from_details(**form.data)
-        return redirect(url_for('thread', id=thread.id))
+        data = form.data.copy()
+        poster = Poster.get_or_create(
+            ip_address=IPAddress.get_or_create(v4=request.remote_addr),
+            name=data.pop('name')
+        )
+        t = poster.create_thread(**data)
+        return redirect(url_for('thread', thread_id=t.id))
     else:
         flash_form_errors(form)
         return redirect(url_for('index'))
 
 
-@app.route('/thread/<int:id>/', methods=['GET'])
-def thread(id):
+@app.route('/thread/<int:thread_id>/', methods=['GET'])
+def thread(thread_id):
     return render_template('thread.html',
-                           thread=Thread.query.get_or_404(id),
+                           thread=Thread.query.get_or_404(thread_id),
                            form=NewPostForm())
 
 
 @app.route('/thread/<int:thread_id>/new-post/', methods=['POST'])
-def new_post(id):
+def new_post(thread_id):
+    t = Thread.query.get_or_404(thread_id)
     form = NewPostForm()
     if form.validate_on_submit():
-        post = Post(thread=Thread.query.get_or_404(id),
-                    **form.data)
-        post.save()
+        data = form.data.copy()
+        poster = Poster.get_or_create(
+            ip_address=IPAddress.get_or_create(v4=request.remote_addr),
+            name=data.pop('name')
+        )
+        poster.create_post(t, **data)
     else:
         flash_form_errors(form)
 
-    return redirect(url_for('thread', id=id))
+    return redirect(url_for('thread', thread_id=thread_id))

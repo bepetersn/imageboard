@@ -15,6 +15,14 @@ class BaseMixin:
         db.session.add(self)
         db.session.commit()
 
+    @classmethod
+    def get_or_create(cls, **kwargs):
+        inst = cls.query.filter_by(**kwargs).first()
+        if inst is None:
+            inst = cls(**kwargs)
+        inst.save()
+        return inst
+
 
 class Thread(BaseMixin, db.Model):
 
@@ -22,17 +30,6 @@ class Thread(BaseMixin, db.Model):
 
     def __init__(self, subject=None):
         self.subject = subject
-
-    @classmethod
-    def from_details(cls, subject, name, image, comment=None):
-        thread = cls(subject)
-        thread.save()
-        p = Post(name=name,
-                 image=image,
-                 comment=comment,
-                 thread=thread)
-        p.save()
-        return thread
 
     id = Column(Integer, primary_key=True)
     subject = Column(Unicode(100))
@@ -42,19 +39,18 @@ class Post(BaseMixin, db.Model):
 
     __tablename__ = 'posts'
 
-    def __init__(self, name=None, image=None, comment=None, thread=None):
+    def __init__(self, image=None, comment=None, thread=None, poster=None):
 
         if image:
             self.image_path = secure_filename(image.filename)
             image.save(os.path.join(UPLOADS_DIR, self.image_path))
 
-        self.name = name
         self.comment = comment
         self.thread = thread
+        self.poster = poster
         self.time_created = datetime.utcnow()
 
     id = Column(Integer, primary_key=True)
-    name = Column(Unicode(100))
     comment = Column(UnicodeText(1500))
     image_path = Column(Unicode(200))
     time_created = Column(DateTime)
@@ -62,3 +58,51 @@ class Post(BaseMixin, db.Model):
     thread = relationship('Thread',
                             backref=backref('posts', lazy='dynamic'),
                             uselist=False)
+    poster_id = Column(ForeignKey('posters.id'))
+    poster = relationship('Poster',
+                            backref=backref('posts', lazy='dynamic'),
+                            uselist=False)
+
+
+class IPAddress(BaseMixin, db.Model):
+
+    __tablename__ = 'ip_addresses'
+
+    def __init__(self, v4):
+
+        self.v4 = v4
+
+    id = Column(Integer, primary_key=True)
+    v4 = Column(Unicode(15))
+
+
+class Poster(BaseMixin, db.Model):
+
+    __tablename__ = 'posters'
+
+    def __init__(self, name, ip_address):
+        self.name = name
+        self.ip_address = ip_address
+
+    def create_thread(self, subject, image, comment=None):
+        thread = Thread(subject)
+        thread.save()
+        p = Post(image=image,
+                 comment=comment,
+                 thread=thread,
+                 poster=self)
+        p.save()
+        return thread
+
+    def create_post(self, thread, image=None, comment=None):
+        return Post(image=image,
+                    comment=comment,
+                    thread=thread,
+                    poster=self)
+
+    id = Column(Integer, primary_key=True)
+    name = Column(Unicode(100))
+    ip_address_id = Column(ForeignKey('ip_addresses.id'))
+    ip_address = relationship('IPAddress',
+                              backref=backref('posters', lazy='dynamic'),
+                              uselist=False)
