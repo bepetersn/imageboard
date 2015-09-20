@@ -3,8 +3,8 @@
 A flat site forum for posting & browsing images.
 
 
-- Run `./manage.py init` to create db tables.  
-- Run `./manage.py` once more to run it locally.
+- Run `./manage.py init` once to create db tables.
+- Run `./manage.py` to run it locally.
 
 ########################################################
 

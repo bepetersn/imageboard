@@ -9,7 +9,7 @@
 <form action="{{ action }}" enctype=multipart/form-data method="POST">
     {{ form.csrf_token }}
     {{ form.name.label }} {{ form.name() }}
-    {% if is_thread %}
+    {% if new_thread %}
     {{ form.subject.label }} {{ form.subject() }}
     {% endif %}
     {{ form.comment.label }} {{ form.comment() }}
