@@ -1,5 +1,6 @@
 import os
 from datetime import datetime
+from flask import request
 from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy import Unicode, Integer, Column, DateTime, ForeignKey, UnicodeText, Boolean
 from sqlalchemy.orm import relationship, backref
@@ -99,10 +100,13 @@ class IPAddress(BaseMixin, db.Model):
         self.v4 = v4
         self.blocked = False if blocked is None else blocked
 
+    @classmethod
+    def from_request(cls):
+        return cls.get_or_create(request.remote_addr)
+
     id = Column(Integer, primary_key=True)
     v4 = Column(Unicode(15), unique=True)
     blocked = Column(Boolean)
-
 
 class Poster(BaseMixin, db.Model):
     """

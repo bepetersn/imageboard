@@ -21,7 +21,7 @@ def filter_on_ips(f):
     """
     @wraps(f)
     def _filter(*args, **kwargs):
-        ip_address = IPAddress.get_or_create(v4=request.remote_addr)
+        ip_address = IPAddress.from_request()
         if ip_address.blocked:
             flash('You have been blocked from posting. Contact support '
                   'for more information.')
@@ -65,7 +65,7 @@ def new_thread():
 
         data = form.data.copy()
         poster = Poster.get_or_create(
-            ip_address=IPAddress.get_or_create(v4=request.remote_addr),
+            ip_address=IPAddress.from_request(),
             name=data.pop('name')
         )
         t = poster.create_thread(**data)
@@ -103,7 +103,7 @@ def new_post(thread_id):
 
         data = form.data.copy()
         poster = Poster.get_or_create(
-            ip_address=IPAddress.get_or_create(v4=request.remote_addr),
+            ip_address=IPAddress.from_request(),
             name=data.pop('name')
         )
         poster.create_post(t, **data)
