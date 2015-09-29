@@ -133,7 +133,7 @@ class Poster(BaseMixin, db.Model):
         self.ip_address = ip_address
 
     @classmethod
-    def from_name(cls, name):
+    def from_details(cls, name):
         return Poster.get_or_create(
             ip_address=IPAddress.from_request(),
             name=name

@@ -1,6 +1,6 @@
 from functools import wraps
 from flask import Flask, render_template, url_for, redirect, \
-    send_from_directory, request, flash
+    send_from_directory, flash
 from werkzeug.utils import secure_filename
 from forms import NewThreadForm, NewPostForm
 from utils import ensure_dir, flash_form_errors
@@ -64,7 +64,7 @@ def new_thread():
     if form.validate_on_submit():
 
         data = form.data.copy()
-        poster = Poster.from_name(data.pop('name'))
+        poster = Poster.from_details(data.pop('name'))
         t = poster.create_thread(**data)
         return redirect(url_for('thread', thread_id=t.id))
 
@@ -99,7 +99,7 @@ def new_post(thread_id):
     if form.validate_on_submit():
 
         data = form.data.copy()
-        poster = Poster.from_name(data.pop('name'))
+        poster = Poster.from_details(data.pop('name'))
         poster.create_post(t, **data)
         return redirect(url_for('thread', thread_id=thread_id))
 
