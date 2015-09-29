@@ -64,10 +64,7 @@ def new_thread():
     if form.validate_on_submit():
 
         data = form.data.copy()
-        poster = Poster.get_or_create(
-            ip_address=IPAddress.from_request(),
-            name=data.pop('name')
-        )
+        poster = Poster.from_name(data.pop('name'))
         t = poster.create_thread(**data)
         return redirect(url_for('thread', thread_id=t.id))
 
@@ -102,10 +99,7 @@ def new_post(thread_id):
     if form.validate_on_submit():
 
         data = form.data.copy()
-        poster = Poster.get_or_create(
-            ip_address=IPAddress.from_request(),
-            name=data.pop('name')
-        )
+        poster = Poster.from_name(data.pop('name'))
         poster.create_post(t, **data)
         return redirect(url_for('thread', thread_id=thread_id))
 

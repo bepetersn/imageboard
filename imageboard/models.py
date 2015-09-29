@@ -132,6 +132,13 @@ class Poster(BaseMixin, db.Model):
         self.name = name
         self.ip_address = ip_address
 
+    @classmethod
+    def from_name(cls, name):
+        return Poster.get_or_create(
+            ip_address=IPAddress.from_request(),
+            name=name
+        )
+
     def create_thread(self, subject, image, comment=None):
         thread = Thread(subject)
         thread.save()
