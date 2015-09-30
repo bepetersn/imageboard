@@ -102,7 +102,7 @@ class IPAddress(BaseMixin, db.Model):
 
     @classmethod
     def from_request(cls):
-        return cls.get_or_create(request.remote_addr)
+        return cls.get_or_create(v4=request.remote_addr)
 
     id = Column(Integer, primary_key=True)
     v4 = Column(Unicode(15), unique=True)
