@@ -6,8 +6,10 @@
 Imageboard = (function() {
 
 	var AppView = Backbone.View.extend({
+
 		render: function(){
 			console.log('in render');
+			this.$el.append('Hello backbone');
 			return this;
 		}
 	});
@@ -15,8 +17,11 @@ Imageboard = (function() {
     return {
         init: function() {
             console.log('in init');
-            var appView = new AppView();
+            var appView = new AppView({
+                el: '#content'
+            });
             appView.render();
         }
     };
+
 })();
