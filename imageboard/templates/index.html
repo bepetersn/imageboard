@@ -4,19 +4,19 @@
 
 {% extends "_base.html" %}
 
-{% block content %}
 
-<h1>Imageboard</h1>
 
-{{ show_post_form(form=form, action=url_for('new_thread'), new_thread=True) }}
+{% block js %}
+{{ super() }}
+<script type="text/javascript" src="/static/js/app.js"></script>
+<script type="text/javascript">
 
-<br/>
+    // Initialize the app
 
-{% for t in threads %}
-    Subject: {{ t.subject }}
-    {{ show_post(t.posts.first()) }}
-    <a href="{{ url_for('thread', thread_id=t.id) }}">Click here to view.</a>
-    <br/><hr><br/>
-{% endfor %}
+    $(function(){
+        console.log('before init');
+        Imageboard.init();
+    });
 
+</script>
 {% endblock %}

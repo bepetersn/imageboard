@@ -4,7 +4,6 @@
     <meta charset="UTF-8">
     <title>{% block title %}Imageboard{% endblock title %}</title>
     {% block css %}
-    <link rel="stylesheet" type="text/css" href="/static/style.css" />
     {% endblock css %}
 </head>
 <body>
@@ -21,5 +20,10 @@
         {% block content %}
         {% endblock content %}
     </div>
+    {% block js %}
+    <script type="text/javascript" src="/static/js/lib/underscore.js"></script>
+    <script type="text/javascript" src="/static/js/lib/backbone.js"></script>
+    <script type="text/javascript" src="/static/js/lib/jquery.js"></script>
+    {% endblock js %}
 </body>
 </html>
