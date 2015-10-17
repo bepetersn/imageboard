@@ -4,10 +4,18 @@
 
 
 Imageboard = (function() {
+
+	var AppView = Backbone.View.extend({
+		render: function(){
+			console.log('in render');
+			return this;
+		}
+	});
+
     return {
         init: function() {
             console.log('in init');
-            appView = AppView();
+            var appView = new AppView();
             appView.render();
         }
     };
